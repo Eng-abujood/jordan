@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> تراث بلادي</title>
-    <link href="https://googleapis.com" rel="stylesheet">
+    <title>تراث بلادي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --main-bg: #0f172a; /* كحلي غامق جداً */
@@ -15,8 +15,17 @@
             --white: #ffffff;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-        body { background-color: var(--main-bg); color: var(--text-light); line-height: 1.6; }
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; 
+            /* منع تحديد النصوص في الموقع كامل */
+            user-select: none; 
+            -webkit-user-select: none;
+        }
+        
+        body { 
+            background-color: var(--main-bg); color: var(--text-light); line-height: 1.6; 
+            transition: filter 0.3s ease; /* لتنفيذ تأثير التغبيش بسلاسة */
+        }
 
         header { 
             background: var(--card-bg);
@@ -25,7 +34,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        header h1 { color: var(--accent); font-size: 2.5rem; margin-bottom: 10px; }
+        header h1 { color: var(--accent); font-size: 2.2rem; margin-bottom: 10px; }
 
         /* الصفحات */
         .page { display: none; padding: 40px 20px; max-width: 1200px; margin: auto; min-height: 80vh; }
@@ -45,7 +54,7 @@
         }
 
         .nav-card:hover { transform: translateY(-10px); border-color: var(--accent); }
-        .nav-card img { width: 100%; height: 200px; object-fit: cover; }
+        .nav-card img { width: 100%; height: 200px; object-fit: cover; pointer-events: none; }
         .nav-card h3 { margin-top: 15px; color: var(--white); }
 
         /* الصفحات الداخلية */
@@ -65,7 +74,11 @@
         .item-btn:hover, .item-btn.active-item { border-color: var(--accent); background: rgba(251, 191, 36, 0.1); }
 
         .display-box { background: var(--card-bg); padding: 30px; border-radius: 20px; text-align: center; }
-        .display-box img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 15px; margin-bottom: 20px; display: none; border: 3px solid var(--accent); }
+        .display-box img { 
+            width: 100%; max-height: 400px; object-fit: cover; border-radius: 15px; 
+            margin-bottom: 20px; display: none; border: 3px solid var(--accent); 
+            pointer-events: none; /* منع سحب الصورة أو الضغط عليها */
+        }
         .display-box p { color: var(--text-dim); font-size: 1.1rem; }
 
         footer { 
@@ -78,13 +91,10 @@
         @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
     </style>
 </head>
-<body>
-
-<header>
+<body oncontextmenu="return false;"> <header>
     <h1>استكشف الأردن حيث الاصالة و العراقة اجتمعت في مكان واحد</h1>
 </header>
 
-<!-- الرئيسية -->
 <div id="home" class="page active">
     <div class="home-grid">
         <div class="nav-card" onclick="openSection('recreational')">
@@ -114,7 +124,6 @@
     </div>
 </div>
 
-<!-- المحتوى الفرعي -->
 <div id="subPage" class="page">
     <div class="page-header">
         <h2 id="pageTitle" style="color: var(--accent);"></h2>
@@ -134,6 +143,7 @@
     <div class="footer-content">
         <p>تصميم وإعداد</p>
         <p>الطالب: <strong>محمد محمد جهاد خياط</strong></p>
+        <p>الرقم الجامعي: <strong>202511975</strong></p>
         <p>التخصص: <strong>هندسة البرمجيات</strong></p>
     </div>
 </footer>
@@ -192,7 +202,6 @@
         const menu = document.getElementById('sideMenu');
         menu.innerHTML = '';
 
-        // تصفير العرض
         document.getElementById('mainImg').style.display = 'none';
         document.getElementById('itemName').innerText = 'اختر من القائمة';
         document.getElementById('itemDesc').innerText = 'اضغط على أحد الخيارات لعرض التفاصيل والصور.';
@@ -221,6 +230,34 @@
         document.getElementById('subPage').classList.remove('active');
         document.getElementById('home').classList.add('active');
     }
+
+    /* --- قسم حماية المحتوى المضاف --- */
+
+    // 1. التغبيش عند الخروج من النافذة (لمنع تصوير الشاشة ببرامج القص)
+    window.addEventListener('blur', () => {
+        document.body.style.filter = 'blur(15px)';
+    });
+    window.addEventListener('focus', () => {
+        document.body.style.filter = 'none';
+    });
+
+    // 2. منع اختصارات لوحة المفاتيح للتصوير وفتح الكود (للكمبيوتر)
+    document.onkeydown = function(e) {
+        if (e.keyCode == 123 || // F12
+            (e.ctrlKey && e.shiftKey && e.keyCode == 73) || // Ctrl+Shift+I
+            (e.ctrlKey && e.keyCode == 85) || // Ctrl+U
+            e.keyCode == 44) { // PrintScreen
+            return false;
+        }
+    };
+
+    // 3. رسالة تنبيه عند محاولة حفظ الصور (اختياري)
+    document.querySelectorAll('img').forEach(img => {
+        img.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+        });
+    });
+
 </script>
 
 </body>
