@@ -15,17 +15,13 @@
             --white: #ffffff;
         }
 
+        /* منع تحديد النص في الموقع كامل */
         * { 
             margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; 
-            /* منع تحديد النصوص في الموقع كامل */
-            user-select: none; 
-            -webkit-user-select: none;
+            user-select: none; -webkit-user-select: none; 
         }
         
-        body { 
-            background-color: var(--main-bg); color: var(--text-light); line-height: 1.6; 
-            transition: filter 0.3s ease; /* لتنفيذ تأثير التغبيش بسلاسة */
-        }
+        body { background-color: var(--main-bg); color: var(--text-light); line-height: 1.6; }
 
         header { 
             background: var(--card-bg);
@@ -34,7 +30,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        header h1 { color: var(--accent); font-size: 2.2rem; margin-bottom: 10px; }
+        header h1 { color: var(--accent); font-size: 2.5rem; margin-bottom: 10px; }
 
         /* الصفحات */
         .page { display: none; padding: 40px 20px; max-width: 1200px; margin: auto; min-height: 80vh; }
@@ -73,13 +69,32 @@
         }
         .item-btn:hover, .item-btn.active-item { border-color: var(--accent); background: rgba(251, 191, 36, 0.1); }
 
-        .display-box { background: var(--card-bg); padding: 30px; border-radius: 20px; text-align: center; }
+        /* صندوق العرض مع العلامة المائية */
+        .display-box { 
+            background: var(--card-bg); padding: 30px; border-radius: 20px; 
+            text-align: center; position: relative; overflow: hidden; 
+        }
+
+        /* كود العلامة المائية لحماية السكرين شوت */
+        .display-box::before {
+            content: "برمجة محمد خياط - 202511975";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-25deg);
+            font-size: 2.5rem;
+            color: rgba(255, 255, 255, 0.05); /* شفافة جداً لا تضايق العين ولكن تظهر في التصوير */
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 10;
+        }
+
         .display-box img { 
             width: 100%; max-height: 400px; object-fit: cover; border-radius: 15px; 
             margin-bottom: 20px; display: none; border: 3px solid var(--accent); 
-            pointer-events: none; /* منع سحب الصورة أو الضغط عليها */
+            pointer-events: none; 
         }
-        .display-box p { color: var(--text-dim); font-size: 1.1rem; }
+        .display-box p { color: var(--text-dim); font-size: 1.1rem; position: relative; z-index: 20; }
 
         footer { 
             background: #000; color: var(--white); text-align: center; 
@@ -91,7 +106,9 @@
         @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
     </style>
 </head>
-<body oncontextmenu="return false;"> <header>
+<body oncontextmenu="return false;">
+
+<header>
     <h1>استكشف الأردن حيث الاصالة و العراقة اجتمعت في مكان واحد</h1>
 </header>
 
@@ -231,33 +248,14 @@
         document.getElementById('home').classList.add('active');
     }
 
-    /* --- قسم حماية المحتوى المضاف --- */
+    // كود التغبيش (Blur) عند محاولة الخروج من المتصفح
+    window.addEventListener('blur', () => { document.body.style.filter = 'blur(15px)'; });
+    window.addEventListener('focus', () => { document.body.style.filter = 'none'; });
 
-    // 1. التغبيش عند الخروج من النافذة (لمنع تصوير الشاشة ببرامج القص)
-    window.addEventListener('blur', () => {
-        document.body.style.filter = 'blur(15px)';
-    });
-    window.addEventListener('focus', () => {
-        document.body.style.filter = 'none';
-    });
-
-    // 2. منع اختصارات لوحة المفاتيح للتصوير وفتح الكود (للكمبيوتر)
+    // منع اختصارات المطورين
     document.onkeydown = function(e) {
-        if (e.keyCode == 123 || // F12
-            (e.ctrlKey && e.shiftKey && e.keyCode == 73) || // Ctrl+Shift+I
-            (e.ctrlKey && e.keyCode == 85) || // Ctrl+U
-            e.keyCode == 44) { // PrintScreen
-            return false;
-        }
+        if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73) || (e.ctrlKey && e.keyCode == 85)) return false;
     };
-
-    // 3. رسالة تنبيه عند محاولة حفظ الصور (اختياري)
-    document.querySelectorAll('img').forEach(img => {
-        img.addEventListener('mousedown', (e) => {
-            e.preventDefault();
-        });
-    });
-
 </script>
 
 </body>
